@@ -6,11 +6,13 @@ import time
 import os.path
 import sys
 import threading
+import OAuth2Util
 
 #initial setup
 
 r = praw.Reddit('MarkDown Fixer')
-r.login("User","Pass")
+o = OAuth2Util.OAuth2Util(r)
+o.refresh(force=True)
 
 pickle_file = "save.p"
 
@@ -57,7 +59,6 @@ def threadedCheck(comment):
 while True:
 	try:
 		sub_comments = subreddit.get_comments(limit=200) #fetch comments from r/all
-
 		for comment in sub_comments:
 			if comment.id not in searched: 
 				searched.add(comment.id) #add the comment id to the log
@@ -66,7 +67,7 @@ while True:
 					t = threading.Thread(target=threadedCheck, args=(comment,))
 					t.start() #start a threaded event with a timer incase of a ninja edit
 
-		time.sleep(2)
+		time.sleep(1)
 	except Exception,e:
 		print(e)
 		continue
