@@ -22,6 +22,7 @@ if os.path.isfile(pickle_file):
 else:
 	searched = set()
 
+reply_message = "It seems you've used the wrong syntax for linking a word with reddit.\n\n Try: \[Word\]\(http://link.com) instead. :)\n\n \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- \n\n *^^I'm ^^a ^^bot* \n\n ^^^[Contact](https://www.reddit.com/message/compose/?to=bsmith0) ^^^| ^^^[Code](https://github.com/braeden123/MarkdownFixer)"
 
 def dumpComments(): 
 	"""
@@ -47,13 +48,15 @@ def threadedCheck(comment):
 	print("Thread resumed")
 	s = r.get_submission(comment.permalink) #Get updated comment based 
 	updatedComment = s.comments[0]			#on original permalink
-	
-	if ")[http" in updatedComment.body.lower(): #if we match the comment again
-		comment.reply("It seems you've used the wrong syntax for linking a word with reddit.\n\n Try: \[Word\]\(http://link.com) instead. :)\n\n \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- \n\n *^^I'm ^^a ^^bot* \n\n ^^^[Contact](https://www.reddit.com/message/compose/?to=bsmith0)") 
-		print("Replied")
-	else:
-		print("Ninja-edited")
-
+	if len(s.comments) >= 1:
+                updatedComment = s.comments[0]
+                if ")[http" in updatedComment.body.lower(): #if we match the comment again
+                    comment.reply(reply_message)
+                    print("Replied")
+                else:
+                    print("Ninja-edited")
+        else:
+            print("Deleted")
 
 #Main loop
 while True:
