@@ -50,18 +50,19 @@ def threadedCheck(comment):
 	print("Thread sleeping")
 	time.sleep(60) #wait 1 minute before checking again
 	print("Thread resumed")
+	r._use_oauth = False
 	s = r.get_submission(comment.permalink) #Get updated comment based 
 	updatedComment = s.comments[0]			#on original permalink
 	if len(s.comments) >= 1: #Making sure comment exists
 		updatedComment = s.comments[0]
 		if ")[http" in updatedComment.body.lower(): #if we match the comment again
-			comment.reply(reply_message)
+			comment.reply(reply_text)
 			print("Replied")
 		else:
 			print("Ninja-edited")
 	else:
 		print("Deleted")
-
+	r._use_oauth = True
 def checkInbox():
 	"""
 	Check inbox for replies which contain "fixed" from the author of the mistake
